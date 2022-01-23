@@ -8,6 +8,7 @@ import java.util.List;
  * Abstract method used to represent a lighting fixture in the theatre
  * Created by furtchet on 11/14/15.
  */
+//abstract：https://blog.csdn.net/qq_42077125/article/details/80725592
 public abstract class Fixture {
     public static final int MAX_LEVEL = 255;
     public static final String PRESET_TEXT_COLOR = "#99ccff";

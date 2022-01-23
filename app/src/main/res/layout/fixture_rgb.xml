@@ -38,15 +38,13 @@
         android:textColor="@android:color/white"
         android:textSize="30sp"/>
 
-    <FrameLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/ambilwarna_dialogView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:layout_below="@id/channel_rgb_level"
         android:layout_above="@id/channel_rgb_edit"
-        >
+        android:layout_below="@id/channel_rgb_level"
+        android:layout_gravity="center">
 
 
         <RelativeLayout
@@ -55,16 +53,16 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:clipToPadding="false"
-            android:paddingBottom="@dimen/ambilwarna_spacer"
             android:paddingLeft="@dimen/ambilwarna_spacer"
+            android:paddingTop="@dimen/ambilwarna_spacer"
             android:paddingRight="@dimen/ambilwarna_spacer"
-            android:paddingTop="@dimen/ambilwarna_spacer">
+            android:paddingBottom="@dimen/ambilwarna_spacer">
 
             <yuku.ambilwarna.AmbilWarnaSquare
                 android:id="@+id/ambilwarna_viewSatBri"
                 android:layout_width="@dimen/ambilwarna_hsvWidth"
                 android:layout_height="@dimen/ambilwarna_hsvHeight"
-                android:layerType="software"/>
+                android:layerType="software" />
 
             <ImageView
                 android:id="@+id/ambilwarna_viewHue"
@@ -73,21 +71,21 @@
                 android:layout_marginLeft="@dimen/ambilwarna_spacer"
                 android:layout_toRightOf="@id/ambilwarna_viewSatBri"
                 android:scaleType="fitXY"
-                android:src="@drawable/ambilwarna_hue"/>
+                android:src="@drawable/ambilwarna_hue" />
 
             <ImageView
                 android:id="@+id/ambilwarna_cursor"
                 android:layout_width="9dp"
                 android:layout_height="9dp"
                 android:scaleType="matrix"
-                android:src="@drawable/ambilwarna_cursor"/>
+                android:src="@drawable/ambilwarna_cursor" />
 
             <ImageView
                 android:id="@+id/ambilwarna_target"
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:scaleType="matrix"
-                android:src="@drawable/ambilwarna_target"/>
+                android:src="@drawable/ambilwarna_target" />
 
             <TextView
                 android:id="@+id/rgb_name"
@@ -96,7 +94,7 @@
                 android:layout_alignBottom="@+id/ambilwarna_viewSatBri"
                 android:layout_centerHorizontal="true"
                 android:text=""
-                android:textColor="#fff"/>
+                android:textColor="#fff" />
 
         </RelativeLayout>
 

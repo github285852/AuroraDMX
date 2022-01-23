@@ -30,7 +30,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Collections;
 import java.util.List;
-
+//extends、implements：https://blog.csdn.net/guangod/article/details/90263567?utm_medium=distribute.pc_relevant.none-task-blog-2~default~baidujs_baidulandingword~default-0.pc_relevant_default&spm=1001.2101.3001.4242.1&utm_relevant_index=3
 public class StandardFixture extends Fixture implements OnSeekBarChangeListener, OnClickListener {
 
 
@@ -58,6 +58,8 @@ public class StandardFixture extends Fixture implements OnSeekBarChangeListener,
     }
 
     private void init() {
+        // LayoutInflater：https://www.cnblogs.com/top5/archive/2012/05/04/2482328.html
+        //取得xml里定义的view
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         viewGroup = (RelativeLayout) inflater.inflate(R.layout.fixture_standard, null);
 
