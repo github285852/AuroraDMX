@@ -15,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TabHost;
 import android.widget.Toast;
 
 import com.AuroraByteSoftware.AuroraDMX.billing.Billing;
@@ -39,6 +40,7 @@ import fr.azelart.artnetstack.domain.artpollreply.ArtPollReply;
 import static com.AuroraByteSoftware.AuroraDMX.ui.fontawesome.FontAwesomeManager.addFAIcon;
 
 public class MainActivity extends Activity implements OnSharedPreferenceChangeListener {
+    private TabHost tab;
 
     private static SharedPreferences sharedPref;
     static Double cueCount = 1.0;// cueCount++ = new cue num
@@ -79,6 +81,11 @@ public class MainActivity extends Activity implements OnSharedPreferenceChangeLi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        tab = (TabHost)findViewById(R.id.tabhost);
+        tab.setup();
+        addTabSpec();
+
         pm = new ProjectManagement(this);
         Log.v(getClass().getSimpleName(), "onCreate");
         billing.setup(this);
@@ -101,6 +108,10 @@ public class MainActivity extends Activity implements OnSharedPreferenceChangeLi
         AuroraNetwork.setUpNetwork(this);
     }
 
+    private void addTabSpec(){
+        tab.addTab(tab.newTabSpec("tab1").setIndicator("Scene").setContent(R.id.hsi));
+        tab.addTab(tab.newTabSpec("tab2").setIndicator("hsi").setContent(R.id.scene));
+    }
 
     private void startup() {
         updatingFixtures = true;
@@ -121,15 +132,6 @@ public class MainActivity extends Activity implements OnSharedPreferenceChangeLi
 
     private void setupButtons() {
         // Add Cue
-        Button button = findViewById(R.id.AddCueButton);
-        CueClickListener addCueListener = new CueClickListener();
-        button.setOnClickListener(addCueListener);
-        button.setOnLongClickListener(addCueListener);
-        // Next Cue
-        button = findViewById(R.id.go_button);
-        NextCueListener goListener = new NextCueListener();
-        button.setOnClickListener(goListener);
-        button.setOnLongClickListener(goListener);
     }
 
     public static SharedPreferences getSharedPref() {

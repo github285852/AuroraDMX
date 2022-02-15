@@ -9,80 +9,27 @@
     tools:context=".MainActivity"
     style="@style/TiledWallpaper"
     android:id="@+id/main">
-        
-    <com.AuroraByteSoftware.AuroraDMX.ui.MyHorizontalScrollView
-        android:id="@+id/horizontalScrollView1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/horizontalScrollView2"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:fillViewport="true"
-        android:clipToPadding="true">
+
+    <TabHost
+        android:id="@+id/tabhost"
+        android:layout_width="200dip"
+        android:layout_height="300dip">
 
         <LinearLayout
-            android:id="@+id/ChanelLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:paddingBottom="3pt" >
+            android:orientation="vertical">
 
-            <include layout="@layout/fixture_standard"/>
-            <include layout="@layout/fixture_standard"/>
-            <include layout="@layout/fixture_standard"/>
-            <include layout="@layout/fixture_standard"/>
-            <include layout="@layout/fixture_rgb"/>
-            <include layout="@layout/fixture_standard"/>
-            <include layout="@layout/fixture_standard"/>
-            <include layout="@layout/fixture_standard"/>
-            <include layout="@layout/fixture_standard"/>
-            <include layout="@layout/fixture_standard"/>
-            <include layout="@layout/fixture_standard"/>
-            <include layout="@layout/fixture_standard"/>
-            <include layout="@layout/fixture_standard"/>
-            <include layout="@layout/fixture_standard"/>
-            <include layout="@layout/fixture_standard"/>
-        </LinearLayout>
-
-    </com.AuroraByteSoftware.AuroraDMX.ui.MyHorizontalScrollView>
-
-    <com.joanzapata.iconify.widget.IconButton
-        android:text="@string/nextCue"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:id="@+id/go_button"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@+id/horizontalScrollView1"
-        android:background="@drawable/button_style_go"
-        android:textSize="40sp"/>
-
-    <HorizontalScrollView
-        android:id="@+id/horizontalScrollView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_toLeftOf="@id/go_button">
-
-        <LinearLayout
-            android:id="@+id/CueLine"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:paddingBottom="3pt" >
-
-            <Button
-                android:id="@+id/AddCueButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/AddCue" />
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="220dp"
+                android:layout_height="55dp" />
 
         </LinearLayout>
-    </HorizontalScrollView>
+    </TabHost>
 
-
+    <FrameLayout
+        android:id="@android:id/tabcontent"
+        android:layout_width="410dp"
+        android:layout_height="677dp" />
 </RelativeLayout>

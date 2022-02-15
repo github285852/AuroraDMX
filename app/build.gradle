@@ -6,7 +6,7 @@ android {
     compileSdkVersion 30
     defaultConfig {
         applicationId "com.AuroraByteSoftware.AuroraDMX"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 30
         versionCode 62
         versionName '4.6.3'
