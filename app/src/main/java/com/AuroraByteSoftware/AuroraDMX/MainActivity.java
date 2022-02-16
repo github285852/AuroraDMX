@@ -10,12 +10,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TabHost;
+import android.widget.TabHost.OnTabChangeListener;
 import android.widget.Toast;
 
 import com.AuroraByteSoftware.AuroraDMX.billing.Billing;
@@ -109,8 +111,26 @@ public class MainActivity extends Activity implements OnSharedPreferenceChangeLi
     }
 
     private void addTabSpec(){
+//        动态载入xml
+        LayoutInflater.from(this).inflate(R.layout.hsi,tab.getTabContentView());
+        LayoutInflater.from(this).inflate(R.layout.scene,tab.getTabContentView());
+
         tab.addTab(tab.newTabSpec("tab1").setIndicator("Scene").setContent(R.id.hsi));
         tab.addTab(tab.newTabSpec("tab2").setIndicator("hsi").setContent(R.id.scene));
+//     标签切换事件处理
+        tab.setOnTabChangedListener(new OnTabChangeListener(){
+        @Override
+        public void onTabChanged(String tabId){
+            if(tabId.equals("tab1"))
+            {
+                Log.v("TAB","标签一");
+            }
+            if(tabId.equals("tab2"))
+            {
+                Log.v("TAB","标签二");
+            }
+        }
+        });
     }
 
     private void startup() {
@@ -142,91 +162,7 @@ public class MainActivity extends Activity implements OnSharedPreferenceChangeLi
     void setNumberOfFixtures(int numberFixtures, String[] channelNames, boolean[] isRGB,
                              String[] valuePresets, Boolean[] isParked) {
         updatingFixtures = true;
-        // check for app purchase
-        boolean paid = true;
-        // Skip the paid check when developing
-        try {
-            paid = billing.check();
-        } catch (IllegalStateException | NullPointerException e) {
-            // Do nothing we must not be connected yet
-            e.printStackTrace();
-        }
-        if (BuildConfig.DEBUG) {
-            paid = true;
-        }
 
-        // Input cleansing
-        if (numberFixtures > MAX_CHANNEL) {
-            Toast.makeText(MainActivity.this, R.string.dmxRangeError, Toast.LENGTH_SHORT).show();
-            numberFixtures = MAX_CHANNEL;
-        } else if (numberFixtures < 1) {
-            Toast.makeText(MainActivity.this, R.string.dmxRangeError, Toast.LENGTH_SHORT).show();
-            numberFixtures = 1;
-        } else if (numberFixtures > 5 && !paid) {
-            Toast.makeText(MainActivity.this, R.string.dmxRangePurchaseLimit, Toast.LENGTH_SHORT).show();
-            numberFixtures = 5;
-        }
-
-        int change = numberFixtures - alColumns.size();
-        int numOfChannelsUsed = 0;//use calculateChannelCount() ?
-        LinearLayout mainLayout = findViewById(R.id.ChanelLayout);
-
-        orgColor = Color.parseColor(getSharedPref().getString("channel_color", "#ffcc00"));
-        if (change > 0) {// Adding channels
-            for (int x = (numberFixtures - change); x < numberFixtures && x < 512; x++) {
-                if (isRGB != null && isRGB[x]) {
-                    RGBFixture e = new RGBFixture(
-                            this,
-                            channelNames == null ? null : channelNames[x],
-                            valuePresets == null ? null : valuePresets[x]);
-                    if (isParked != null)
-                        e.setParked(isParked[x]);
-                    alColumns.add(e);
-                } else {
-                    StandardFixture e = new StandardFixture(
-                            this,
-                            channelNames == null ? null : channelNames[x],
-                            valuePresets == null ? null : valuePresets[x]
-                    );
-                    if (isParked != null)
-                        e.setParked(isParked[x]);
-                    alColumns.add(e);
-                }
-                mainLayout.addView(alColumns.get(x).getViewGroup());
-            }
-            for (Fixture fixture : alColumns) {
-                numOfChannelsUsed += fixture.getChLevels().size();
-            }
-            for (CueObj cue : getAlCues()) {// Pad ch's in cues
-                cue.padChannels(numOfChannelsUsed);
-            }
-            for (int i = patchList.size(); i < numOfChannelsUsed; i++) {
-                patchList.add(new ChPatch(i));
-            }
-        } else if (change < 0) {// Removing channels
-            for (int x = (numberFixtures - change); x > numberFixtures && x <= 512; x--) {
-                mainLayout.removeView(alColumns.get(x - 1).getViewGroup());
-                alColumns.remove(x - 1);
-            }
-            for (Fixture fixture : alColumns) {
-                numOfChannelsUsed += fixture.getChLevels().size();
-            }
-            for (CueObj cue : getAlCues()) {
-                cue.padChannels(numOfChannelsUsed);
-            }
-            patchList = new ArrayList<>(patchList.subList(0, numOfChannelsUsed));
-        }
-
-        //Reset all the levels to display the percentage or step value
-        for (Fixture alColumn : alColumns) {
-            alColumn.setChLevels(alColumn.getChLevels());
-        }
-
-        oneToOnePatch();
-
-        recalculateFixtureNumbers();
-
-        getSharedPref().edit().putString(SettingsActivity.channels, String.format("%1$s", numberFixtures)).apply();
         updatingFixtures = false;
     }
 
@@ -357,7 +293,7 @@ public class MainActivity extends Activity implements OnSharedPreferenceChangeLi
 
         if (getSharedPref().getBoolean(SettingsActivity.restoredefaults, false)) {
             restoreDefaults();
-            getSharedPref().edit().putBoolean(SettingsActivity.restoredefaults, false).apply();
+//            getSharedPref().edit().putBoolean(SettingsActivity.restoredefaults, false).apply();
         }
         // Change the column color
         int color = Color.parseColor(getSharedPref().getString("channel_color", "#ffcc00"));
@@ -403,56 +339,8 @@ public class MainActivity extends Activity implements OnSharedPreferenceChangeLi
 
     private void restoreDefaults() {
         Log.v(getClass().getSimpleName(), "Restoring Defaults");
-        // Remove all the preferences
-        getSharedPref().edit().clear().apply();
-        // Stop ArtNet
-        AuroraNetwork.stopNetwork();
-        getAlCues().clear();
-        cueCount = 1.0;
-        for (Fixture columns : alColumns) {
-            columns.getViewGroup().removeAllViews();
-        }
-        alColumns.clear();
-        ((LinearLayout) findViewById(R.id.ChanelLayout)).removeAllViews();
-        // Refresh views
-        LinearLayout cueLine = findViewById(R.id.CueLine);
-        cueLine.removeAllViews();
-        for (CueObj cue : getAlCues()) {
-            // create a new "Add Cue" button
-            cue.setButton(CueClickListener.makeButton(cue.getCueName(), this));
-            cueLine.addView(cue.getButton());
-            cue.setHighlight(0, 0, 0);
-        }
-        PatchActivity.patchOneToOne();
 
-        // create a new "Add Cue" button
-        ((LinearLayout) findViewById(R.id.CueLine)).addView(CueClickListener.makeButton(getString(R.string.AddCue), this));
-        AuroraNetwork.setUpNetwork(this);
     }
-
-//    // Listener that's called when we finish querying the items and
-//    // subscriptions we own
-//    private static final IabHelper.QueryInventoryFinishedListener mQueryFinishedListener = new IabHelper.QueryInventoryFinishedListener() {
-//        public void onQueryInventoryFinished(IabResult result, Inventory inventory) {
-//            if (result.isFailure()) {
-//                // handle error
-//                System.err.print(result.getMessage());
-//            }
-//        }
-//    };
-//
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        Log.i(getClass().getSimpleName(), "onActivityResult(" + requestCode + "," + resultCode + "," + data);
-//
-//        // Pass on the activity result to the helper for handling
-//        if (mHelper != null && !mHelper.handleActivityResult(requestCode, resultCode, data)) {
-//            super.onActivityResult(requestCode, resultCode, data);
-//        } else {
-//            Log.i(getClass().getSimpleName(), "onActivityResult handled by IABUtil.");
-//        }
-//    }
-
 
     /**
      * Listener that is called after the user selects a file to import
